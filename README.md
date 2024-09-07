@@ -9,7 +9,7 @@ Here a visual explaination (In german, just look at the colors):
 
 <img width="203" alt="image" src="https://github.com/user-attachments/assets/72f68fa2-69cf-4359-b11c-736be3cd8a7e">
 
-Here a example when running the code and setting the player count to 2000 (The must be 2001 chars then):
+Here a example when running the code and setting the player count to 4500 (The text length must be 4501 then):
 
 <img width="299" alt="image" src="https://github.com/user-attachments/assets/73a34485-17fd-47ff-bb1f-8803af131c96">
 
