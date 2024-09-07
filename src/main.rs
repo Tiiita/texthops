@@ -42,8 +42,8 @@ fn player_count(content: &String) -> u32 {
 
     let input: u32 = input.trim().parse().expect("Please type a valid number!");
     if content.len() <= input as usize {
-        println!("Too many players.. Max: {}", content.len());
-        player_count(content);
+        println!("Too many (text length too short).. Max: {}", content.len());
+        return player_count(content);
     }
 
     println!("Calculating with {} players", input);
