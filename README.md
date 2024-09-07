@@ -11,4 +11,5 @@ Here a visual explaination (In german, just look at the colors):
 
 Here a example when running the code and setting the player count to 2000 (The must be 2001 chars then):
 
-![image](https://github.com/user-attachments/assets/cd9a5cf2-b101-43d9-a0e3-22e245885737)
+<img width="299" alt="image" src="https://github.com/user-attachments/assets/73a34485-17fd-47ff-bb1f-8803af131c96">
+
