@@ -5,9 +5,10 @@ fn main() {
     let path: &str = "text.txt";
     let content = fs::read_to_string(path).expect("Failed to read content of file, wrong path?");
 
-    let start_time = SystemTime::now();
+ 
 
     let players = player_count(&content);
+    let start_time = SystemTime::now();
     println!("Starting hop algorythm");
     let mut results = vec![0; players as usize];
     for i in 0..players {
