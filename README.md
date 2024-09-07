@@ -7,8 +7,7 @@ You have a text. Player 1 would start at the first letter and checks the index i
 
 Here a visual explaination (In german, just look at the colors):
 
-<img width="264" alt="image" src="https://github.com/user-attachments/assets/aaad6211-926a-4ec3-a210-d8b5916cb604">
-
+![image](https://github.com/user-attachments/assets/cd9a5cf2-b101-43d9-a0e3-22e245885737)
 
 
 Here a example when running the code and setting the player count to 2000 (The must be 2001 chars then):
