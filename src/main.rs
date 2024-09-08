@@ -1,4 +1,5 @@
-use std::{collections::HashMap, fs, io, time::SystemTime};
+use core::arch;
+use std::{array, collections::HashMap, fs, io, time::SystemTime};
 
 fn main() {
     println!("Reading file..");
@@ -9,10 +10,11 @@ fn main() {
     let start_time = SystemTime::now();
     println!("Starting hop algorythm");
     let mut results = vec![0; players as usize];
+
     let chars: Vec<char> = content.chars().collect();
-    let letters = letters();
+    let config = GameConfig::new(&chars);
     for i in 0..players {
-        results[i as usize] = hop(i, &chars, &letters);
+        results[i as usize] = hop(i, &config);
     }
 
     let time_needed = SystemTime::now()
@@ -50,13 +52,12 @@ fn player_count(content: &String) -> u32 {
     input
 }
 
-fn hop(start_index: u32, chars: &[char], letters: &HashMap<char, u32>) -> u32 {
+fn hop(start_index: u32, config: &GameConfig) -> u32 {
     let mut moves: u32 = 0;
 
-    let ignore_chars = vec![
-        ' ', '/', '(', ')', '.', '&', '!', '$', ',', '\n', ':', '%', ';', '-', '_', '=', '{', '}',
-        '§', '"', '+', '[', ']', '|', '’', '\'', 
-    ];
+    let ignore_chars = &config.ignore_chars;
+    let letters = config.letters;
+    let chars = config.chars;
 
     let mut index = start_index;
     loop {
@@ -70,11 +71,10 @@ fn hop(start_index: u32, chars: &[char], letters: &HashMap<char, u32>) -> u32 {
                 }
 
                 let letter_lowercase = &ele.to_lowercase().next().unwrap();
-
-                let next_index = letters.get(letter_lowercase).expect(&format!(
-                    "Tried to get char that cannot be found in registered letters: {:?}",
-                    letter_lowercase
-                ));
+                
+                let mut buf = [0_u16; 1];
+                letter_lowercase.encode_utf16(&mut buf);
+                let next_index = letters[buf[0] as usize];
 
                 index += next_index;
                 moves += 1;
@@ -86,20 +86,44 @@ fn hop(start_index: u32, chars: &[char], letters: &HashMap<char, u32>) -> u32 {
     }
 }
 
-fn letters() -> HashMap<char, u32> {
-    let mut map = HashMap::new();
+fn letters() -> [u32; 256] {
+    let mut buffer = [0_u16; 1];
+    let mut a = [0; 256];
 
     let alphabet: Vec<char> = ('a'..='z').collect();
 
     let mut index = 1;
     for ele in alphabet {
-        map.insert(ele, index);
+        ele.encode_utf16(&mut buffer);
+        a[buffer[0] as usize] = index;
         index += 1;
     }
 
-    map.insert('ä', 27);
-    map.insert('ö', 28);
-    map.insert('ü', 29);
-    map.insert('ß', 30);
-    map
+    'ä'.encode_utf16(&mut buffer);
+    a[buffer[0] as usize] = 27;
+
+    'ö'.encode_utf16(&mut buffer);
+    a[buffer[0] as usize] = 28;
+    'ü'.encode_utf16(&mut buffer);
+    a[buffer[0] as usize] = 29;
+    'ß'.encode_utf16(&mut buffer);
+    a[buffer[0] as usize] = 30;
+    a
+}
+
+struct GameConfig<'a> {
+    chars: &'a [char],
+    letters: [u32; 256],
+    ignore_chars: Vec<char>,
+}
+
+impl<'a> GameConfig<'a> {
+    fn new(chars: &'a [char]) -> Self {
+        let letters = letters();
+        let ignore_chars = vec![
+            ' ', '/', '(', ')', '.', '&', '!', '$', ',', '\n', ':', '%', ';', '-', '_', '=', '{', '}',
+            '§', '"', '+', '[', ']', '|', '’', '\'', 
+        ];
+        Self { chars, letters, ignore_chars }
+    }
 }
