@@ -55,7 +55,7 @@ fn hop(start_index: u32, text: &String) -> u32 {
     let letters = letters();
     let ignore_chars = vec![
         ' ', '/', '(', ')', '.', '&', '!', '$', ',', '\n', ':', '%', ';', '-', '_', '=', '{', '}',
-        '§', '"', '+', '[', ']', '|'
+        '§', '"', '+', '[', ']', '|', '’', '\'', 
     ];
 
     let mut index = start_index;
