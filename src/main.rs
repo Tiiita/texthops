@@ -9,8 +9,10 @@ fn main() {
     let start_time = SystemTime::now();
     println!("Starting hop algorythm");
     let mut results = vec![0; players as usize];
+    let chars: Vec<char> = content.chars().collect();
+    let letters = letters();
     for i in 0..players {
-        results[i as usize] = hop(i, &content);
+        results[i as usize] = hop(i, &chars, &letters);
     }
 
     let time_needed = SystemTime::now()
@@ -48,11 +50,9 @@ fn player_count(content: &String) -> u32 {
     input
 }
 
-fn hop(start_index: u32, text: &String) -> u32 {
+fn hop(start_index: u32, chars: &[char], letters: &HashMap<char, u32>) -> u32 {
     let mut moves: u32 = 0;
-    let chars: Vec<char> = text.chars().collect();
 
-    let letters = letters();
     let ignore_chars = vec![
         ' ', '/', '(', ')', '.', '&', '!', '$', ',', '\n', ':', '%', ';', '-', '_', '=', '{', '}',
         '§', '"', '+', '[', ']', '|', '’', '\'', 
