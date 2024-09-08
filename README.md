@@ -14,5 +14,6 @@ Here a visual explaination (In german, just look at the colors):
 
 Here a example when running the code and setting the player count to 4500 (The text length must be 4501 then):
 
-<img width="299" alt="image" src="https://github.com/user-attachments/assets/73a34485-17fd-47ff-bb1f-8803af131c96">
+![image](https://github.com/user-attachments/assets/1ef3dfdf-8e83-46ea-9a45-566256f50038)
+
 
