@@ -1,5 +1,8 @@
-use core::arch;
-use std::{array, collections::HashMap, fs, io, time::SystemTime};
+use rayon::iter::IntoParallelIterator;
+use rayon::iter::ParallelIterator;
+use std::borrow::BorrowMut;
+use std::sync::{Arc, Mutex};
+use std::{fs, io, time::SystemTime};
 
 fn main() {
     println!("Reading file..");
@@ -9,30 +12,31 @@ fn main() {
     let players = player_count(&content);
     let start_time = SystemTime::now();
     println!("Starting hop algorythm");
-    let mut results = vec![0; players as usize];
+
+    let results = Arc::new(Mutex::new(vec![0; players as usize]));
 
     let chars: Vec<char> = content.chars().collect();
     let config = GameConfig::new(&chars);
-    for i in 0..players {
-        results[i as usize] = hop(i, &config);
-    }
+
+    (0..players)
+        .into_par_iter()
+        .for_each(|i| results.clone().borrow_mut().lock().unwrap()[i as usize] = hop(i, &config));
 
     let time_needed = SystemTime::now()
         .duration_since(start_time)
         .expect("Error measuring needed time for algorythms");
-    println!(
-        "Done, took: {} ms",
-        time_needed.as_millis()
-    );
+    println!("Done, took: {} ms", time_needed.as_millis());
     println!("");
 
-    let min_element = results
-        .iter()
-        .enumerate()
-        .min_by_key(|pair| pair.1)
-        .unwrap();
+    let lock = results.lock().unwrap();
 
-    println!("Player {} won, needed: '{}' hops!", min_element.0 + 1, min_element.1);
+    let min_element = lock.iter().enumerate().min_by_key(|pair| pair.1).unwrap();
+
+    println!(
+        "Player {} won, needed: '{}' hops!",
+        min_element.0 + 1,
+        min_element.1
+    );
 }
 
 fn player_count(content: &String) -> u32 {
@@ -71,7 +75,7 @@ fn hop(start_index: u32, config: &GameConfig) -> u32 {
                 }
 
                 let letter_lowercase = &ele.to_lowercase().next().unwrap();
-                
+
                 let mut buf = [0_u16; 1];
                 letter_lowercase.encode_utf16(&mut buf);
                 let next_index = letters[buf[0] as usize];
@@ -121,9 +125,13 @@ impl<'a> GameConfig<'a> {
     fn new(chars: &'a [char]) -> Self {
         let letters = letters();
         let ignore_chars = vec![
-            ' ', '/', '(', ')', '.', '&', '!', '$', ',', '\n', ':', '%', ';', '-', '_', '=', '{', '}',
-            '§', '"', '+', '[', ']', '|', '’', '\'', 
+            ' ', '/', '(', ')', '.', '&', '!', '$', ',', '\n', ':', '%', ';', '-', '_', '=', '{',
+            '}', '§', '"', '+', '[', ']', '|', '’', '\'',
         ];
-        Self { chars, letters, ignore_chars }
+        Self {
+            chars,
+            letters,
+            ignore_chars,
+        }
     }
 }
