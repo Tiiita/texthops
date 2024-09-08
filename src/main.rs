@@ -2,10 +2,8 @@ use std::{collections::HashMap, fs, io, time::SystemTime};
 
 fn main() {
     println!("Reading file..");
-    let path: &str = "text.txt";
-    let content = fs::read_to_string(path).expect("Failed to read content of file, wrong path?");
-
- 
+    const PATH: &str = "text.txt";
+    let content = fs::read_to_string(PATH).expect("Failed to read content of file, wrong path?");
 
     let players = player_count(&content);
     let start_time = SystemTime::now();
@@ -57,7 +55,7 @@ fn hop(start_index: u32, text: &String) -> u32 {
     let letters = letters();
     let ignore_chars = vec![
         ' ', '/', '(', ')', '.', '&', '!', '$', ',', '\n', ':', '%', ';', '-', '_', '=', '{', '}',
-        '§', '"', '+',
+        '§', '"', '+', '[', ']', '|'
     ];
 
     let mut index = start_index;
